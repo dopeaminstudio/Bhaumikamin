@@ -4,9 +4,9 @@
   box-sizing: border-box;
 }
 
-body, html {
-  height: 100%;
+html, body {
   width: 100%;
+  height: 100%;
   overflow: hidden;
   font-family: "Poppins", sans-serif;
   background: radial-gradient(circle at bottom, #000010, #020014 60%, #01010a 100%);
@@ -15,10 +15,10 @@ body, html {
 
 #container {
   position: absolute;
-  width: 100%;
-  height: 100%;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .overlay {
@@ -29,22 +29,35 @@ body, html {
   text-align: center;
   z-index: 10;
   color: #ffffffdd;
+  pointer-events: none; /* allows clicks to pass through */
 }
 
 .overlay h1 {
-  font-size: 3em;
-  letter-spacing: 3px;
+  font-size: 2.5em;
+  letter-spacing: 2px;
   margin-bottom: 10px;
 }
 
 .overlay p {
-  font-size: 1.2em;
+  font-size: 1em;
   opacity: 0.8;
 }
 
 #timer {
-  margin-top: 20px;
+  margin-top: 15px;
   font-size: 1.1em;
   color: #00ccff;
   letter-spacing: 1px;
+}
+
+@media (max-width: 600px) {
+  .overlay h1 {
+    font-size: 1.8em;
+  }
+  .overlay p {
+    font-size: 0.9em;
+  }
+  #timer {
+    font-size: 1em;
+  }
 }
