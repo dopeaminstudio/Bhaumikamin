@@ -1,4 +1,4 @@
-// THREE.js Setup
+// === THREE.js SETUP ===
 const container = document.getElementById("container");
 const scene = new THREE.Scene();
 
@@ -12,10 +12,12 @@ camera.position.set(0, 1.5, 5);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(0x000000, 0);
+renderer.setPixelRatio(window.devicePixelRatio);
 container.appendChild(renderer.domElement);
 
-// Ground plane
+// === SCENE OBJECTS ===
+
+// Ground
 const planeGeo = new THREE.PlaneGeometry(10, 10);
 const planeMat = new THREE.MeshStandardMaterial({ color: 0x111122 });
 const plane = new THREE.Mesh(planeGeo, planeMat);
@@ -27,7 +29,7 @@ const ballGeo = new THREE.SphereGeometry(0.4, 32, 32);
 const ballMat = new THREE.MeshStandardMaterial({
   color: 0x00aaff,
   emissive: 0x004488,
-  metalness: 0.6,
+  metalness: 0.7,
   roughness: 0.4,
 });
 const ball = new THREE.Mesh(ballGeo, ballMat);
@@ -40,36 +42,41 @@ const pointLight = new THREE.PointLight(0x00aaff, 1.5);
 pointLight.position.set(2, 3, 3);
 scene.add(pointLight);
 
-// Physics variables
+// === GAME LOGIC ===
 let velocity = 0;
 let gravity = -0.005;
 let isBouncing = false;
 let startTime = 0;
 let timerElem = document.getElementById("timer");
 
-// Click interaction
-window.addEventListener("click", (e) => {
-  // Raycast to check if the ball was clicked
+// Function to handle ball tap/click
+function handleInteraction(x, y) {
   const mouse = new THREE.Vector2(
-    (e.clientX / window.innerWidth) * 2 - 1,
-    -(e.clientY / window.innerHeight) * 2 + 1
+    (x / window.innerWidth) * 2 - 1,
+    -(y / window.innerHeight) * 2 + 1
   );
   const raycaster = new THREE.Raycaster();
   raycaster.setFromCamera(mouse, camera);
   const intersects = raycaster.intersectObject(ball);
-
   if (intersects.length > 0) {
-    velocity = 0.15 + Math.random() * 0.05; // bounce power
+    velocity = 0.15 + Math.random() * 0.05;
     isBouncing = true;
     startTime = performance.now();
   }
+}
+
+// Support both click and touch
+window.addEventListener("click", (e) => handleInteraction(e.clientX, e.clientY));
+window.addEventListener("touchstart", (e) => {
+  const touch = e.touches[0];
+  handleInteraction(touch.clientX, touch.clientY);
 });
 
-// Animation loop
+// === ANIMATION LOOP ===
 function animate() {
   requestAnimationFrame(animate);
 
-  // Apply gravity
+  // Simple gravity bounce
   if (isBouncing) {
     ball.position.y += velocity;
     velocity += gravity;
@@ -93,7 +100,7 @@ function animate() {
 
 animate();
 
-// Handle resize
+// === RESPONSIVENESS ===
 window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
